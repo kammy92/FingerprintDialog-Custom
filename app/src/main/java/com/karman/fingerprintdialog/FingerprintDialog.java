@@ -359,17 +359,13 @@ public class FingerprintDialog extends DialogFragment {
         }
     };
     
-    priv
-    
     private enum AuthenticationType {
         FINGERPRINT,
         NEW_FINGERPRINT_ENROLLED,
         PASSWORD
     }
     
-    ate
-    
-    void hideKeyboard () {
+    private void hideKeyboard () {
         new Handler ().postDelayed (new Runnable () {
             @Override
             public void run () {
@@ -382,8 +378,6 @@ public class FingerprintDialog extends DialogFragment {
         }, 200);
         
     }
-    
-    priv
     
     public class FingerprintUiHelper extends FingerprintManager.AuthenticationCallback {
         
@@ -488,9 +482,7 @@ public class FingerprintDialog extends DialogFragment {
         }
     }
     
-    ate
-    
-    boolean checkPassword (String password) {
+    private boolean checkPassword (String password) {
         if (password.equalsIgnoreCase ("123456")) {
             return true;
         } else {
