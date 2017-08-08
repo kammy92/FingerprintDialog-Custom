@@ -67,9 +67,8 @@ import javax.crypto.SecretKey;
  */
 @SuppressLint("ValidFragment")
 public class FingerprintDialog extends DialogFragment {
-    String USE_FINGERPRINT_IN_FUTURE = "use_fingerprint_in_future";
-    
     public static String SECRET_MESSAGE = "secret_message";
+    String USE_FINGERPRINT_IN_FUTURE = "use_fingerprint_in_future";
     String DEFAULT_KEY_NAME = "default_key_name";
     
     KeyStore keyStore;
@@ -96,6 +95,12 @@ public class FingerprintDialog extends DialogFragment {
     private MainActivity mActivity;
     
     private InputMethodManager mInputMethodManager;
+    private final Runnable mShowKeyboardRunnable = new Runnable () {
+        @Override
+        public void run () {
+            mInputMethodManager.showSoftInput (etPassword, 0);
+        }
+    };
     private SharedPreferences mSharedPreferences;
     
     @Override
@@ -199,7 +204,6 @@ public class FingerprintDialog extends DialogFragment {
         });
     }
     
-    
     @Override
     public void onResume () {
         super.onResume ();
@@ -219,7 +223,6 @@ public class FingerprintDialog extends DialogFragment {
         tv2.setText ("Enter password to continue");
         rlFingerprint.setVisibility (View.GONE);
         rlPassword.setVisibility (View.VISIBLE);
-        
         if (isNewFingerprintEnrolled) {
             authenticationType = AuthenticationType.NEW_FINGERPRINT_ENROLLED;
             btNeutral.setEnabled (false);
@@ -263,7 +266,6 @@ public class FingerprintDialog extends DialogFragment {
         mActivity.onSuccessfulAuthentication (false /* without Fingerprint */, null);
         dismiss ();
     }
-    
     
     public void createKey (String keyName) {
         try {
@@ -351,20 +353,6 @@ public class FingerprintDialog extends DialogFragment {
         show (fragmentManager, null);
     }
     
-    
-    private final Runnable mShowKeyboardRunnable = new Runnable () {
-        @Override
-        public void run () {
-            mInputMethodManager.showSoftInput (etPassword, 0);
-        }
-    };
-    
-    private enum AuthenticationType {
-        FINGERPRINT,
-        NEW_FINGERPRINT_ENROLLED,
-        PASSWORD
-    }
-    
     private void hideKeyboard () {
         new Handler ().postDelayed (new Runnable () {
             @Override
@@ -377,6 +365,20 @@ public class FingerprintDialog extends DialogFragment {
             }
         }, 200);
         
+    }
+    
+    private boolean checkPassword (String password) {
+        if (password.equalsIgnoreCase ("123456")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    private enum AuthenticationType {
+        FINGERPRINT,
+        NEW_FINGERPRINT_ENROLLED,
+        PASSWORD
     }
     
     public class FingerprintUiHelper extends FingerprintManager.AuthenticationCallback {
@@ -479,14 +481,6 @@ public class FingerprintDialog extends DialogFragment {
         
         void onError () {
             showPasswordLayout ();
-        }
-    }
-    
-    private boolean checkPassword (String password) {
-        if (password.equalsIgnoreCase ("123456")) {
-            return true;
-        } else {
-            return false;
         }
     }
 }
